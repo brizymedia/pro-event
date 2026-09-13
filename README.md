@@ -24,7 +24,6 @@ npx -y http-server C:/Users/gilau/Documents/pro-event -p 8177 -c-1
 ## 납품 전에 바꿀 것
 
 1. `index.html` 의 `<meta name="robots" content="noindex,nofollow">` 지우기 (시안이라 검색 차단 중).
-2. `index.html` 맨 아래 `.badge-demo` 띠(「리뉴얼 시안 · 큰길브리지 제안용」) 지우기.
 3. `assets/app.js` 맨 위 `FORM_ENDPOINT` 에 문의 접수 서버 주소 넣기 (Apps Script 또는 FormSubmit).
    비어 있으면 폰에서는 문자 앱이 열리고, PC 에서는 내용을 복사해 주고 전화번호를 안내합니다.
 4. `og:image` 를 실제 주소(https://…/assets/img/hero_poster.webp)로.
