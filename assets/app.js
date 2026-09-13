@@ -80,7 +80,6 @@
       hero.addEventListener('pointermove', function (e) {
         var r = hero.getBoundingClientRect(), dx = (e.clientX - r.width / 2) / r.width, dy = (e.clientY - r.height / 2) / r.height;
         h1.style.transform = 'translate(' + (dx * -14) + 'px,' + (dy * -10) + 'px)';
-        video.style.transform = 'translate(' + (dx * 12) + 'px,' + (dy * 8) + 'px)';
       });
     }
   }
