@@ -56,7 +56,8 @@
   video.addEventListener('playing', function () { sound.classList.add('playing'); });
   video.addEventListener('pause', function () { sound.classList.remove('playing'); });
   sound.addEventListener('click', function () { if (video.paused) video.play(); else video.pause(); });
-  video.src = window.innerWidth < 700 ? video.getAttribute("data-src-sm") : video.getAttribute("data-src");
+  var vw = window.innerWidth * Math.min(window.devicePixelRatio || 1, 2);
+  video.src = vw < 900 ? video.getAttribute("data-src-sm") : vw < 1300 ? video.getAttribute("data-src-md") : video.getAttribute("data-src");
   video.muted = true; video.setAttribute("muted", "");
   function tryPlay() { var p = video.play(); if (p && p.catch) p.catch(function () {}); }
   tryPlay(); video.addEventListener("canplay", tryPlay, { once: true });
