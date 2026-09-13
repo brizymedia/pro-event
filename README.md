@@ -27,7 +27,8 @@ npx -y http-server C:/Users/gilau/Documents/pro-event -p 8177 -c-1
 2. `assets/app.js` 맨 위 `FORM_ENDPOINT` 에 문의 접수 서버 주소 넣기 (Apps Script 또는 FormSubmit).
    비어 있으면 폰에서는 문자 앱이 열리고, PC 에서는 내용을 복사해 주고 전화번호를 안내합니다.
 3. `og:image` 를 실제 주소(https://…/assets/img/hero_poster.webp)로.
-4. 포트폴리오 글 순서·제목은 `app.js` 의 `WORKS` 배열에서 고칩니다. 사진 번호(w1~w19)와 글 매핑도 거기가 정본.
+4. 사업분야 사진(`assets/img/biz/b1~b8`)은 전부 프로이벤트 원본: b1 삼성 페스티벌(w9) · b2 소방학교(w10) · b3 광주 어린이날(w12) · b4 강서 간담회(w17) · b5 학교행사 게시판 s3(운동장 단체) · b6 slide01 80.5s 프레임 · b7 토탈시스템 게시판 t2(체육관 무대+LED) · b8 워터밤(w14). AI 이미지 금지. 국회 사진은 게시물 원본 `_raw/assembly/`(n02 와이드 = w13, n08 분수 = w11).
+5. 포트폴리오 글 순서·제목은 `app.js` 의 `WORKS` 배열에서 고칩니다. 사진 번호(w1~w19)와 글 매핑도 거기가 정본.
 
 ## 히어로 영상 (2026-09-13 4차, 한글 정확·드론 위주, 1920×1080)
 
