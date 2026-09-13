@@ -113,8 +113,17 @@
   var bizList = $('#bizList'), stage = $('#bizStage'), imgs = $$('.img', stage), cur = 0, stageEn = $('#stageEn'), stageTitle = $('#stageTitle'), stageDesc = $('#stageDesc');
   var pre = {}; // 미리 읽기
   $$('li', bizList).forEach(function (li) { var im = new Image(); im.src = li.getAttribute('data-img'); pre[im.src] = im; });
+  var narrow = window.matchMedia('(max-width: 900px)');
+  function inlineBiz(li) { // 모바일: 누른 항목 바로 아래에 사진
+    $$('.biz-inline', bizList).forEach(function (b) { b.remove(); });
+    if (!narrow.matches || !li) return;
+    var box = document.createElement('div'); box.className = 'biz-inline';
+    box.innerHTML = '<img src="' + li.getAttribute('data-img') + '" alt="' + $('.t b', li).textContent + ' 현장"><div class="cap"><em>' + li.getAttribute('data-en') + '</em><p>' + li.getAttribute('data-desc') + '</p><a href="#contact">이 행사 견적 문의 →</a></div>';
+    li.appendChild(box);
+  }
   function showBiz(li) {
     if (li.classList.contains('on')) return;
+    inlineBiz(li);
     $$('li', bizList).forEach(function (l) { l.classList.remove('on'); }); li.classList.add('on');
     var next = imgs[1 - cur]; next.style.backgroundImage = 'url(' + li.getAttribute('data-img') + ')';
     imgs[cur].classList.remove('on'); next.classList.add('on'); cur = 1 - cur;
@@ -122,8 +131,15 @@
   }
   $$('li', bizList).forEach(function (li) {
     li.addEventListener('pointerenter', function () { if (fine) showBiz(li); });
-    $('a', li).addEventListener('click', function (e) { if (!li.classList.contains('on') && !fine) { e.preventDefault(); showBiz(li); } });
+    $('a', li).addEventListener('click', function (e) {
+      if (narrow.matches) { // 모바일: 누르면 접었다 폈다
+        e.preventDefault();
+        if (li.classList.contains('on')) { li.classList.remove('on'); inlineBiz(null); } else showBiz(li);
+      } else if (!li.classList.contains('on') && !fine) { e.preventDefault(); showBiz(li); }
+    });
   });
+  inlineBiz($('li.on', bizList));
+  narrow.addEventListener('change', function () { inlineBiz($('li.on', bizList)); });
 
   /* ---------- 포트폴리오 ---------- */
   var WORKS = [
