@@ -1,4 +1,5 @@
-/* PRO EVENT 리뉴얼 시안 — 공통 스크립트 (외부 라이브러리 없음) */
+/* PRO EVENT — 공통 스크립트 (외부 라이브러리 없음)
+   대문(index.html)과 생성 페이지(stories/ · areas/)가 같이 쓴다. 대문에만 있는 부분은 요소가 있을 때만 동작. */
 (function () {
   'use strict';
   var $ = function (s, c) { return (c || document).querySelector(s); };
@@ -7,14 +8,15 @@
   var fine = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
 
   /* ---------- 문의 폼 전송처 ----------
-     서버 주소가 비어 있으면 휴대폰에서는 문자 앱, PC에서는 안내창으로 대신한다.
-     Apps Script 나 FormSubmit 주소를 넣으면 그쪽으로 JSON 이 간다. */
-  var FORM_ENDPOINT = '';
+     공용 문의 서버(큰길브리지와 함께 쓰는 앱스 스크립트) → 대표님 메일 + 큰길브리지 메일.
+     서버가 「ok」라고 답하지 않으면 휴대폰은 문자 앱(내용 채워짐), PC 는 내용을 복사해 준 뒤 전화 안내. */
+  var FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwvQ4UJRZklRX7bZB6C0s1yZgSvBAMCVccT580L_1BtiVDyh0DIxShCAvN9McZIB0b7FA/exec';
   var SMS_TO = '010-3999-8262';
+  var COMPANY = '프로이벤트';
 
   /* ---------- 커튼 ---------- */
   var curtain = $('#curtain');
-  function openCurtain() { curtain.classList.add('done'); }
+  function openCurtain() { if (curtain) curtain.classList.add('done'); }
   window.addEventListener('load', function () { setTimeout(openCurtain, 700); });
   setTimeout(openCurtain, 1900); // 로드가 늦어도 열어 준다
 
@@ -33,26 +35,27 @@
   var menuLinks = $$('.menu a');
   function onScroll() {
     var y = window.scrollY, h = document.documentElement.scrollHeight - window.innerHeight;
-    progress.style.transform = 'scaleX(' + (h > 0 ? y / h : 0) + ')';
-    nav.classList.toggle('on', y > 40);
-    totop.classList.toggle('on', y > 900);
+    if (progress) progress.style.transform = 'scaleX(' + (h > 0 ? y / h : 0) + ')';
+    if (nav) nav.classList.toggle('on', y > 40);
+    if (totop) totop.classList.toggle('on', y > 900);
     var cur = '';
     sections.forEach(function (s) { if (y + window.innerHeight * .4 >= s.offsetTop) cur = s.id; });
     menuLinks.forEach(function (a) { a.classList.toggle('act', a.getAttribute('href') === '#' + cur); });
   }
   window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
-  totop.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); });
+  if (totop) totop.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); });
 
   /* ---------- 모바일 메뉴 ---------- */
   var burger = $('#burger'), sheet = $('#sheet');
-  burger.addEventListener('click', function () {
+  if (burger && sheet) burger.addEventListener('click', function () {
     var on = sheet.classList.toggle('on'); burger.classList.toggle('x', on); burger.setAttribute('aria-expanded', on);
     document.body.style.overflow = on ? 'hidden' : '';
   });
-  $$('a', sheet).forEach(function (a) { a.addEventListener('click', function () { sheet.classList.remove('on'); burger.classList.remove('x'); document.body.style.overflow = ''; }); });
+  if (sheet) $$('a', sheet).forEach(function (a) { a.addEventListener('click', function () { sheet.classList.remove('on'); burger.classList.remove('x'); document.body.style.overflow = ''; }); });
 
   /* ---------- 히어로 영상 · 시차 ---------- */
   var video = $('#heroVideo'), sound = $('#sound'), media = $('#media');
+  if (video && sound && media) (function () {
   video.addEventListener('playing', function () { sound.classList.add('playing'); });
   video.addEventListener('pause', function () { sound.classList.remove('playing'); });
   sound.addEventListener('click', function () { if (video.paused) video.play(); else video.pause(); });
@@ -83,6 +86,7 @@
       });
     }
   }
+  })();
   // 티커 · 클라이언트 띠는 두 번 이어 붙여 끊김 없이
   ['#tickerTrack', '#clientTrack'].forEach(function (s) { var t = $(s); if (t) t.innerHTML += t.innerHTML; });
 
@@ -110,7 +114,9 @@
   });
 
   /* ---------- 사업분야 무대 ---------- */
-  var bizList = $('#bizList'), stage = $('#bizStage'), imgs = $$('.img', stage), cur = 0, stageEn = $('#stageEn'), stageTitle = $('#stageTitle'), stageDesc = $('#stageDesc');
+  var bizList = $('#bizList'), stage = $('#bizStage');
+  if (bizList && stage) (function () {
+  var imgs = $$('.img', stage), cur = 0, stageEn = $('#stageEn'), stageTitle = $('#stageTitle'), stageDesc = $('#stageDesc');
   var pre = {}; // 미리 읽기
   $$('li', bizList).forEach(function (li) { var im = new Image(); im.src = li.getAttribute('data-img'); pre[im.src] = im; });
   var narrow = window.matchMedia('(max-width: 900px)');
@@ -140,6 +146,7 @@
   });
   inlineBiz($('li.on', bizList));
   narrow.addEventListener('change', function () { inlineBiz($('li.on', bizList)); });
+  })();
 
   /* ---------- 포트폴리오 ---------- */
   var WORKS = [
@@ -162,36 +169,59 @@
     { i: 17, t: '강서가족지원센터 송년회', o: '강서가족지원센터', n: 0, c: 'gov', s: 'wide', y: '2026' },
     { i: 18, t: '총동문회 체육대회 · 초대가수 섭외', o: '총동문회', n: 0, c: 'sport', s: 'wide', y: '2026' }
   ];
-  var grid = $('#worksGrid');
-  grid.innerHTML = WORKS.map(function (w, k) {
-    return '<figure class="work ' + w.s + '" data-k="' + k + '" data-c="' + w.c + '">' +
-      '<img src="assets/img/works/w' + w.i + '.webp" alt="' + w.t + '" loading="lazy">' +
-      (w.n ? '<span class="num">' + w.n.toLocaleString('ko-KR') + '<small>명</small></span>' : '') +
-      '<i class="shine"></i><figcaption class="info"><em>' + w.o + ' · ' + w.y + '</em><b>' + w.t + '</b></figcaption></figure>';
-  }).join('');
-  var works = $$('.work', grid);
+  /* 포트폴리오 = WORKS(위 배열) + 대표님이 upload.html 로 올린 사진(photos 가지의 photos.json)을 앞에 합쳐 보여준다 */
+  var UP_LIST = 'https://raw.githubusercontent.com/brizymedia/pro-event/photos/photos/photos.json';
+  var UP_IMG = 'https://cdn.jsdelivr.net/gh/brizymedia/pro-event@photos/';
+  var UP_CAT = { big: '대형행사', corp: '기업행사', gov: '지자체 · 관공서', sport: '체육대회 · 학교행사', cer: '기공식 · 의전', etc: '장비 · 체험' };
+  function esc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function srcOf(w) { return w.u || 'assets/img/works/w' + w.i + '.webp'; }
+  var grid = $('#worksGrid'), list = WORKS.slice(), works = [];
+  function applyFilter() {
+    var act = $('#filters .act'), f = act ? act.getAttribute('data-f') : 'all';
+    works.forEach(function (w) { w.classList.toggle('hide', f !== 'all' && w.getAttribute('data-c').split(' ').indexOf(f) < 0); });
+  }
+  function render() {
+    grid.innerHTML = list.map(function (w, k) {
+      return '<figure class="work ' + (w.s || '') + '" data-k="' + k + '" data-c="' + esc(w.c) + '">' +
+        '<img src="' + esc(srcOf(w)) + '" alt="' + esc(w.t) + '" loading="lazy">' +
+        (w.n ? '<span class="num">' + w.n.toLocaleString('ko-KR') + '<small>명</small></span>' : '') +
+        '<i class="shine"></i><figcaption class="info"><em>' + esc(w.o) + (w.y ? ' · ' + esc(w.y) : '') + '</em><b>' + esc(w.t) + '</b></figcaption></figure>';
+    }).join('');
+    works = $$('.work', grid);
+    if (fine && !reduce) works.forEach(function (w) {
+      w.addEventListener('pointermove', function (e) { var r = w.getBoundingClientRect(); w.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%'); w.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%'); });
+    });
+    applyFilter();
+  }
+  if (grid) {
+  render();
+  fetch(UP_LIST + '?t=' + Math.floor(Date.now() / 300000), { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+    if (!j || !j.photos || !j.photos.length) return;
+    var up = j.photos.filter(function (x) { return x && x.path; }).map(function (x) {
+      return { u: UP_IMG + x.path.split('/').map(encodeURIComponent).join('/'), t: x.event || '행사 현장', o: [UP_CAT[x.cat] || '현장', x.place].filter(Boolean).join(' · '), y: (x.date || '').replace(/-/g, '.'), n: 0, c: x.cat || 'etc', s: '' };
+    });
+    list = up.concat(WORKS); render();
+  }).catch(function () {});
   $('#filters').addEventListener('click', function (e) {
     var b = e.target.closest('button'); if (!b) return;
     $$('button', e.currentTarget).forEach(function (x) { x.classList.remove('act'); }); b.classList.add('act');
-    var f = b.getAttribute('data-f');
-    works.forEach(function (w) { w.classList.toggle('hide', f !== 'all' && w.getAttribute('data-c').split(' ').indexOf(f) < 0); });
-  });
-  if (fine && !reduce) works.forEach(function (w) {
-    w.addEventListener('pointermove', function (e) { var r = w.getBoundingClientRect(); w.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%'); w.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%'); });
+    applyFilter();
   });
   // 라이트박스
   var lb = $('#lb'), lbImg = $('#lbImg'), lbTitle = $('#lbTitle'), lbMeta = $('#lbMeta'), lbK = 0;
   function visible() { return works.filter(function (w) { return !w.classList.contains('hide'); }).map(function (w) { return +w.getAttribute('data-k'); }); }
-  function openLb(k) { var w = WORKS[k]; lbK = k; lbImg.src = 'assets/img/works/w' + w.i + '.webp'; lbImg.alt = w.t; lbTitle.textContent = w.t; lbMeta.textContent = w.o + ' · ' + w.y + (w.n ? ' · ' + w.n.toLocaleString('ko-KR') + '명' : ''); lb.classList.add('on'); document.body.style.overflow = 'hidden'; }
+  function openLb(k) { var w = list[k]; lbK = k; lbImg.src = srcOf(w); lbImg.alt = w.t; lbTitle.textContent = w.t; lbMeta.textContent = w.o + (w.y ? ' · ' + w.y : '') + (w.n ? ' · ' + w.n.toLocaleString('ko-KR') + '명' : ''); lb.classList.add('on'); document.body.style.overflow = 'hidden'; }
   function closeLb() { lb.classList.remove('on'); document.body.style.overflow = ''; }
   function stepLb(d) { var v = visible(), i = v.indexOf(lbK); openLb(v[(i + d + v.length) % v.length]); }
   grid.addEventListener('click', function (e) { var w = e.target.closest('.work'); if (w) openLb(+w.getAttribute('data-k')); });
   $('#lbX').addEventListener('click', closeLb); $('#lbPrev').addEventListener('click', function () { stepLb(-1); }); $('#lbNext').addEventListener('click', function () { stepLb(1); });
   lb.addEventListener('click', function (e) { if (e.target === lb) closeLb(); });
   document.addEventListener('keydown', function (e) { if (!lb.classList.contains('on')) return; if (e.key === 'Escape') closeLb(); if (e.key === 'ArrowLeft') stepLb(-1); if (e.key === 'ArrowRight') stepLb(1); });
+  }
 
   /* ---------- 프로세스 선 ---------- */
-  var steps = $('#steps'); var sio = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { steps.classList.add('in'); sio.disconnect(); } }); }, { threshold: .4 }); sio.observe(steps);
+  var steps = $('#steps');
+  if (steps) { var sio = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { steps.classList.add('in'); sio.disconnect(); } }); }, { threshold: .4 }); sio.observe(steps); }
 
   /* ---------- 카드 기울임 ---------- */
   if (fine && !reduce) $$('[data-tilt]').forEach(function (c) {
@@ -212,20 +242,27 @@
 
   /* ---------- 문의 폼 ---------- */
   var form = $('#quoteForm'), done = $('#formDone');
-  form.addEventListener('submit', function (e) {
+  if (form && done) form.addEventListener('submit', function (e) {
     e.preventDefault();
     var d = {}; ['name', 'tel', 'org', 'type', 'date', 'people', 'msg'].forEach(function (k) { d[k] = form.elements[k].value.trim(); });
     if (!d.name || !d.tel) { alert('담당자 이름과 연락처는 꼭 적어 주세요.'); (d.name ? form.elements.tel : form.elements.name).focus(); return; }
     if (!$('#fAgree').checked) { alert('개인정보 수집·이용에 동의해 주세요.'); return; }
     var text = '[프로이벤트 견적문의]\n담당자: ' + d.name + '\n연락처: ' + d.tel + '\n기관: ' + (d.org || '-') + '\n유형: ' + d.type + '\n예정일: ' + (d.date || '-') + '\n인원: ' + (d.people || '-') + '\n내용: ' + (d.msg || '-');
-    if (FORM_ENDPOINT) {
-      fetch(FORM_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(d) }).catch(function () {}).then(function () { done.classList.add('on'); });
-      return;
+    function local() {
+      var mobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
+      if (mobile) { location.href = 'sms:' + SMS_TO + (/iPhone|iPad/i.test(navigator.userAgent) ? '&' : '?') + 'body=' + encodeURIComponent(text); done.classList.add('on'); return; }
+      if (navigator.clipboard) navigator.clipboard.writeText(text).catch(function () {});
+      done.classList.add('on');
+      $('p', done).innerHTML = '전송이 원활하지 않아 내용을 복사해 두었습니다.<br><b>010-3999-8262</b> 로 문자·전화 주시면 바로 상담됩니다.';
     }
-    var mobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
-    if (mobile) { location.href = 'sms:' + SMS_TO + (/iPhone|iPad/i.test(navigator.userAgent) ? '&' : '?') + 'body=' + encodeURIComponent(text); done.classList.add('on'); return; }
-    if (navigator.clipboard) navigator.clipboard.writeText(text).catch(function () {});
-    done.classList.add('on');
-    $('p', done).innerHTML = '시안 화면이라 전송 서버가 아직 연결되지 않았습니다.<br>내용은 복사해 두었으니 <b>010-3999-8262</b> 로 문자·전화 주시면 바로 상담됩니다.';
+    if (!FORM_ENDPOINT) { local(); return; }
+    /* 서버가 「ok」라고 답할 때만 보낸 것으로 친다. 서버는 page 주소의 레포 이름(pro-event)으로 회사를 알아본다 */
+    var data = { name: d.name + (d.org ? ' (' + d.org + ')' : ''), phone: d.tel, tel: d.tel, org: d.org, type: d.type, date: d.date, people: d.people, msg: d.msg,
+      message: text, page: location.href, service: '[' + COMPANY + '] ' + (d.type || '행사') + ' 문의', website: '',
+      at: new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' }) };
+    fetch(FORM_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(data) })
+      .then(function (r) { return r.json(); })
+      .then(function (j) { if (j && j.ok) done.classList.add('on'); else local(); })
+      .catch(local);
   });
 })();
