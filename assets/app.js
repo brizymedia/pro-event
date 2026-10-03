@@ -266,3 +266,17 @@
       .catch(local);
   });
 })();
+
+/* ---------- 관리자 모드 — 바닥글 맨 끝 작은 메뉴 → office.html (대표 암호로 열림, 큰길브리지 2026-10-04) ---------- */
+(function () {
+  var cs = document.currentScript, base = cs && cs.src ? cs.src.replace(/assets\/app\.js(\?.*)?$/, '') : '';
+  function add() {
+    var ft = document.querySelector('footer'); if (!ft || ft.querySelector('.admin-entry')) return;
+    var d = document.createElement('div'); d.className = 'admin-entry';
+    d.style.cssText = 'text-align:center;padding:12px 0 16px;font-size:12px;line-height:1';
+    d.innerHTML = '<a href="' + base + 'office.html" rel="nofollow" style="color:inherit;opacity:.55;text-decoration:none;display:inline-flex;align-items:center;gap:5px">' +
+      '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>관리자 모드</a>';
+    ft.appendChild(d);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', add); else add();
+})();

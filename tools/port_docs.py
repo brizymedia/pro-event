@@ -525,3 +525,5 @@ if __name__ == '__main__':
     port('schedule.html', schedule_extra)
     port_servers()
     office()
+    import admin_gate                      # 관리자 모드 잠금 화면 (대표 암호 = 계약 서버 BOX_PW)
+    admin_gate.apply(os.path.join(SITE, 'office.html'), ID, NAME, CONTRACT_URL, OFFICE)
