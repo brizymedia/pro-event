@@ -1,0 +1,42 @@
+{
+ "updated": "",
+ "categories": [
+  {
+   "slug": "big",
+   "name": "대형행사",
+   "desc": "",
+   "count": 0
+  },
+  {
+   "slug": "corp",
+   "name": "기업행사",
+   "desc": "",
+   "count": 0
+  },
+  {
+   "slug": "gov",
+   "name": "지자체 · 관공서",
+   "desc": "",
+   "count": 0
+  },
+  {
+   "slug": "sport",
+   "name": "체육대회 · 학교행사",
+   "desc": "",
+   "count": 0
+  },
+  {
+   "slug": "cer",
+   "name": "기공식 · 의전",
+   "desc": "",
+   "count": 0
+  },
+  {
+   "slug": "etc",
+   "name": "음향 · 조명 · 무대 · 체험",
+   "desc": "",
+   "count": 0
+  }
+ ],
+ "photos": []
+}
