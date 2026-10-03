@@ -225,7 +225,7 @@ const unb64 = (s) => { let t = String(s).replace(/-/g,'+').replace(/_/g,'/'); wh
 function toast(m){ const t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(()=>t.classList.remove('on'), 2400); }
 
 const 우리 = { name:'프로이벤트', brand:'프로이벤트', rep:'배광길', biz:'206-27-92478',
-  addr:'서울시 강남구 역삼동 778-3', tel:'02-457-8262', email:'' };
+  addr:'서울시 강남구 역삼동 778-3', tel:'02-457-8262', email:'pro-event@daum.net' };
 const 기본계좌 = '';
 
 const 새번호 = () => 'PR-' + 오늘().replace(/-/g,'') + '-' + Math.random().toString(36).slice(2,5).toUpperCase();
