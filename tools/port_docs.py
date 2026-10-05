@@ -31,8 +31,8 @@ CODE_PRE = 'PR-'                                    # 계약 번호 앞글자
 BLOG     = 'https://blog.naver.com/pro_event'
 
 # 서버(앱스 스크립트) — 배포하면 주소를 넣고 다시 돌린다. 비어 있으면 서버 없이 동작(저장함은 이 기기만, 계약은 긴 링크).
-CONTRACT_URL = ''
-GALLERY_URL  = ''
+CONTRACT_URL = 'https://script.google.com/macros/s/AKfycbxRVcKWlhn8f3MansjmczcSKXTNyLvWfF99d9lhJDhC4SQcX5-CISQ6s0SGYGFL_L7gRQ/exec'   # 2026-10-03 어대리 배포 (gilauto325)
+GALLERY_URL  = 'https://script.google.com/macros/s/AKfycbzPv-ZoZVhBWVabYWhdsm1vZ39mFBe8UfhoxDkwgnrEHSbZKodJE4t9lkuI3yqI5OZr/exec'   # 비밀번호는 서버 속성에만
 
 LOGO_FILE = 'assets/img/favicon.svg'                # 머리글에 쓰는 네모 마크
 MAIL_LOGO = 'https://brizymedia.github.io/pro-event/assets/img/logo.png'   # 메일 머리(어두운 바탕용 가로 로고, 흰 글씨 PNG)
