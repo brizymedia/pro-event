@@ -6,7 +6,7 @@
   python tools/make_pages.py
 
 내용은 아래 STORIES · AREAS 표만 고치면 된다. 사실만 적을 것(홈페이지 포트폴리오 · 원본 사이트 게시물 · 네이버 블로그 · 대표님 확인분).
-만든 뒤 sitemap.xml 도 같이 다시 쓴다.
+만든 뒤 sitemap.xml 도 같이 다시 쓴다(블로그 항목은 남긴다). index.html 머리글 · 바닥글을 고쳤으면 node scripts/build-blog.mjs 도 다시 돌린다.
 """
 import os, re, html, datetime
 
@@ -211,7 +211,11 @@ def area_pages():
 def sitemap(extra):
     today = datetime.date.today().isoformat()
     urls = [BASE, BASE + 'quote.html'] + extra
-    xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + ''.join('  <url><loc>' + u + '</loc><lastmod>' + today + '</lastmod></url>\n' for u in urls) + '</urlset>\n'
+    # 블로그 항목(scripts/build-blog.mjs 가 넣은 것)은 그대로 둔다
+    path = os.path.join(SITE, 'sitemap.xml')
+    old = open(path, encoding='utf-8').read() if os.path.exists(path) else ''
+    blog = ''.join(l + '\n' for l in old.splitlines() if '/blog/' in l)
+    xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + ''.join('  <url><loc>' + u + '</loc><lastmod>' + today + '</lastmod></url>\n' for u in urls) + blog + '</urlset>\n'
     open(os.path.join(SITE, 'sitemap.xml'), 'w', encoding='utf-8', newline='\n').write(xml)
 
 

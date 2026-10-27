@@ -73,3 +73,10 @@ npx -y http-server C:/Users/gilau/Documents/pro-event -p 8177 -c-1
 - 직인: `assets/img/stamp-pro.png` (투명 PNG) 가 생기면 계약서 · 명세서에 찍힌다. 없으면 「(인)」 자리만.
 - 생성 페이지(stories · areas)의 틀은 `index.html` 머리글 · 바닥글을 빌린다 → 대문 메뉴를 고쳤으면 `python tools/make_pages.py` 를 다시 돌릴 것.
 - `assets/img/stories/` 사진은 네이버 블로그 pro_event 원문 사진(cy = 창용초 운동회 2026-09, ot = 동남보건대 OT 2026-03).
+
+## 행사 준비 블로그 (2026-10-28, HD기획 _blog 체계 이식)
+
+- 원본 `_blog/`(GUIDE.md 규칙서 · regions.json 지역 9 · keywords.json 주제 · photos.json 쓸 수 있는 사진 · sources.json 공식 출처 · posts/ 글 JSON) → `node scripts/build-blog.mjs` 가 `blog/` · `rss.xml` · sitemap · llms.txt 를 만든다. 결과 HTML 은 손으로 고치지 않는다.
+- 새 글: `node scripts/blog-plan.mjs` 로 주제 고르기 → 글 JSON 작성 → `node scripts/blog-check.mjs --new <파일>` 통과 → 빌드.
+- 블로그 머리글 · 바닥글 · robots(noindex)는 `index.html` 에서 빌려 온다. 대문 메뉴를 고치면 `python tools/make_pages.py` 와 `node scripts/build-blog.mjs` 를 둘 다 다시 돌린다.
+- 검색 등록 전이라 네이버 · IndexNow 알림은 하지 않았다.
