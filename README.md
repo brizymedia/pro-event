@@ -60,6 +60,7 @@ npx -y http-server C:/Users/gilau/Documents/pro-event -p 8177 -c-1
 | 전자계약서 | `contract.html?admin=1` | 계약 서버(`apps-script/contract`) — 배포 전, 없으면 긴 링크 |
 | 거래명세서 | `statement.html?admin=1` | 없음 |
 | 행사 일정 · 체크리스트 | `schedule.html` | 계약 서버 |
+| 대표 직접 수정 모드(글·사진) | `index.html?edit=열쇠` (`assets/edit.js`, 열쇠 해시는 `<meta name="pro-edit">`, 원문은 레포에 없음 — 바탕화면 큰길브리지\프로이벤트-수정모드-열쇠.txt) | 공용 문의 서버로 메일 → `python tools/apply_edits.py` 로 반영 |
 | 대표 전용 업무 문서함 | `office.html` (공개 링크 없음) | — |
 | 사진 올리기 + 블로그 · 인스타 글 | `upload.html` | 갤러리 서버(`apps-script/gallery`) → `photos` 가지 → 대문 포트폴리오에 합쳐 보임 |
 | 행사 이야기 5편 | `stories/` | 없음 — `python tools/make_pages.py` |
