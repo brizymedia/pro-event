@@ -348,7 +348,14 @@ ${상담(r.slug === 'common' ? undefined : `${r.이름} 행사 날짜가 잡히�
     let t = readFileSync(ll, 'utf8').replace(/\r\n/g, '\n');
     const 절 = `## 블로그 (행사 준비 정보, 지역별)\n- [행사 준비 블로그](${SITE}/blog/): 서울 · 경기 지역별 행사 준비 체크리스트\n` +
       posts.map((p) => `- [${p.title}](${SITE}${글주소(p.slug)}): ${p.description}`).join('\n') + '\n';
-    t = /^## 블로그[^]*?(?=^## |\s*$)/m.test(t) ? t.replace(/^## 블로그[^]*?(?=^## |\s*$)/m, 절) : t.trimEnd() + '\n\n' + 절;
+    /* 「## 블로그」부터 다음 「## 」 절 앞(없으면 끝)까지 바꾼다 — 옛 식은 m 플래그의 $ 가 줄 끝에 걸려 두 번째 실행부터 목록이 겹쳤다 (HD기획 고침 이식) */
+    const 시작 = t.search(/^## 블로그/m);
+    if (시작 < 0) t = t.trimEnd() + '\n\n' + 절;
+    else {
+      const 뒤 = t.slice(시작 + 1);
+      const 다음 = 뒤.search(/^## /m);
+      t = t.slice(0, 시작) + 절 + (다음 >= 0 ? '\n' + 뒤.slice(다음) : '');
+    }
     writeFileSync(ll, t, 'utf8');
   }
 

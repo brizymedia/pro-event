@@ -118,7 +118,7 @@ body.locked #gate{display:grid;min-height:100vh;place-items:center;padding:24px}
     else m.push('일정 기능은 서버 새 버전 필요');
     show('s-contract', j.box === 'ready' && j.sched === 'ready', m.join(' · '));
   });
-  ping(G, 's-gallery', function(j){ show('s-gallery', !!(j && j.ok), j && j.ok ? ('연결됨' + (j['설정완료'] === false ? ' · 설정 미완료' : '')) : '응답 이상'); });
+  ping(G, 's-gallery', function(j){ show('s-gallery', !!(j && j.ok), j && j.ok ? ('연결됨' + (function(s){ var m = (s && typeof s === 'object') ? Object.keys(s).filter(function(k){ return !s[k]; }) : (s === false ? ['설정'] : []); return m.length ? ' · 설정 미완료(' + m.join(', ') + ')' : ''; })(j['설정완료'])) : '응답 이상'); });
 })();
 </script>
 <!--GATE--><script>

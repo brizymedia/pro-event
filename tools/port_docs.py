@@ -302,6 +302,7 @@ def catalog_extra(s):
 
 
 def quote_extra(s):
+    s = re.sub(r"const 견적_수신_이메일 = '[^']*';", "const 견적_수신_이메일 = '" + EMAIL + "';", s, count=1)  # 견적 문의 예비 메일은 회사로만 (큰길 메일 X)
     s = re.sub(r'\s*<p class="no-print" id="stamp-note".*?</p>', '', s, count=1, flags=re.S)
     s = re.sub(r'\s*<td valign="middle" align="right" width="66" style="padding-left:6px;">\s*<img src="\$\{직인\}".*?</td>', '', s, count=1, flags=re.S)
     s = re.sub(r'<title>[^<]*</title>', '<title>' + QUOTE_TITLE + '</title>', s, count=1)
@@ -311,6 +312,7 @@ def quote_extra(s):
 
 
 def contract_extra(s):
+    s = re.sub(r"const 회사_수신_이메일 = '[^']*';", "const 회사_수신_이메일 = '" + EMAIL + "';", s, count=1)  # 서명본 예비 메일은 회사로만 (큰길 메일 X)
     s = re.sub(r'\.brand img\{ height:1\.8rem;filter:brightness\(0\) invert\(1\)[^}]*\}', '.brand img{ height:1.8rem;border-radius:.4rem; }', s)
     s = re.sub(r"const STAMP_SRC = '" + re.escape(STAMP) + r"';[^\n]*", "const STAMP_SRC = '" + STAMP + "';  // 대표님 인감(투명 PNG)을 이 이름으로 넣으면 찍힌다. 없으면 「(인)」", s)
     s = s.replace('return `<div class="seal-css">${esc(C.co.brand||C.co.name)}<br>대표<br>인</div>`;', 'return `<div class="seal-none">(인)</div>`;')
@@ -365,7 +367,7 @@ def port_servers():
         ('const recipients = uniq_([COMPANY_EMAIL, to.company', 'const recipients = uniq_([COMPANY_EMAIL, MANAGER_EMAIL, to.company'),
     ])
     c = c.replace("    // 서명본 사본을 항상 받을 주소 (계약서의 co.email 과 별개로 무조건 수신)\n",
-                  "    // 서명본 사본을 항상 받을 주소 (계약서의 co.email 과 별개로 무조건 수신)\nconst MANAGER_EMAIL    = 'gilauto325@gmail.com'; // 관리하는 큰길브리지도 사본을 받는다 (빼려면 '' )\n", 1)
+                  "    // 서명본 사본을 항상 받을 주소 (계약서의 co.email 과 별개로 무조건 수신)\nconst MANAGER_EMAIL    = ''; // 큰길브리지는 사본을 받지 않는다 (2026-10-28 형님 지시). 받으려면 메일 주소를 넣는다\n", 1)
     c = c.replace('형님과 직원이', '대표님과 직원이').replace('형님 암호(BOX_PW)', '대표님 암호(BOX_PW)')
     assert 'MANAGER_EMAIL    =' in c, '계약 서버: MANAGER_EMAIL 넣을 자리를 못 찾음'
     write('apps-script/contract/Code.gs', c)
@@ -507,7 +509,7 @@ h1 em{{font-style:normal;color:{O['accent2']}}}
     else m.push('일정 기능은 서버 새 버전 필요');
     show('s-contract', j.box === 'ready' && j.sched === 'ready', m.join(' · '));
   }});
-  ping(G, 's-gallery', function(j){{ show('s-gallery', !!(j && j.ok), j && j.ok ? ('연결됨' + (j['설정완료'] === false ? ' · 설정 미완료' : '')) : '응답 이상'); }});
+  ping(G, 's-gallery', function(j){{ show('s-gallery', !!(j && j.ok), j && j.ok ? ('연결됨' + (function(s){{ var m = (s && typeof s === 'object') ? Object.keys(s).filter(function(k){{ return !s[k]; }}) : (s === false ? ['설정'] : []); return m.length ? ' · 설정 미완료(' + m.join(', ') + ')' : ''; }})(j['설정완료'])) : '응답 이상'); }});
 }})();
 </script>
 </body>
