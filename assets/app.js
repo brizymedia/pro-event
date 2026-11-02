@@ -280,3 +280,35 @@
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', add); else add();
 })();
+
+/* ---------- 문의 중복 전송 막기 (큰길브리지 2026-11-02) ----------
+   문의 서버(구글 앱스 스크립트)가 답하는 데 몇 초 걸려, 그사이 「보내기」를 여러 번 누르면 메일이 여러 통 갔다.
+   폼을 보낸 직후 서버로 가는 요청이 시작되면 그 폼을 잠그고 단추에 「보내는 중…」을 띄운다. 답이 오면 풀린다. */
+(function () {
+  if (window.__formGuard) return; window.__formGuard = true;
+  var last = null, lastAt = 0;
+  document.addEventListener('submit', function (e) {
+    var f = e.target;
+    if (f && f.getAttribute && f.getAttribute('data-sending')) { e.preventDefault(); e.stopImmediatePropagation(); return; }
+    last = f; lastAt = Date.now();
+  }, true);
+  function lock(f, on) {
+    var bs = f.querySelectorAll('button[type="submit"], button:not([type]), input[type="submit"]');
+    if (on) f.setAttribute('data-sending', '1'); else f.removeAttribute('data-sending');
+    Array.prototype.forEach.call(bs, function (b) {
+      if (on) { if (b.getAttribute('data-label') === null) b.setAttribute('data-label', b.innerHTML); b.disabled = true; b.style.opacity = '.6'; b.style.cursor = 'wait'; if (b.tagName === 'BUTTON') b.textContent = '보내는 중…'; }
+      else if (b.getAttribute('data-label') !== null) { b.disabled = false; b.style.opacity = ''; b.style.cursor = ''; if (b.tagName === 'BUTTON') b.innerHTML = b.getAttribute('data-label'); b.removeAttribute('data-label'); }
+    });
+  }
+  var of = window.fetch; if (!of) return;
+  window.fetch = function (url, opt) {
+    var p = of.apply(this, arguments);
+    var f = last;
+    if (f && Date.now() - lastAt < 3000 && opt && /post/i.test(opt.method || '') && /script\.google\.com\/macros/.test(String(url))) {
+      last = null; lock(f, true);
+      var un = function () { lock(f, false); };
+      p.then(un, un);
+    }
+    return p;
+  };
+})();
